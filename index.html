@@ -22,43 +22,33 @@ body{margin:0;font-family:Arial,Tahoma,sans-serif;background:linear-gradient(135
 <div id="list"></div>
 
 <section class="ai" id="ai">
-  <div class="aiHead">
-    <div><div class="aiTitle">🤖 اسأل الوهباني AI</div><div class="aiSub">مساعدك للذكر والطمأنينة</div></div>
-    <span class="online">● جاهز</span>
-  </div>
+  <div class="aiHead"><div><div class="aiTitle">🤖 اسأل الوهباني AI</div><div class="aiSub">مساعد ذكي حقيقي للذكر والطمأنينة</div></div><span class="online">● AI</span></div>
   <div class="suggestions">
     <button onclick="askAI('السلام عليكم')">السلام عليكم</button>
     <button onclick="askAI('ما أذكار الصباح؟')">أذكار الصباح</button>
     <button onclick="askAI('أعطني ذكرًا قصيرًا الآن')">ذكر قصير</button>
     <button onclick="askAI('ما الذكر المناسب عند الخوف؟')">عند الخوف</button>
   </div>
-  <div id="chat" class="chat">
-    <div class="msg bot">السلام عليكم ورحمة الله وبركاته 🌿<br>أنا <b>الوهباني AI</b>. اسألني عن الأذكار والذكر، وسأساعدك بما أستطيع.</div>
-  </div>
-  <div class="composer">
-    <input id="aiInput" placeholder="اكتب سؤالك هنا..." onkeydown="if(event.key==='Enter')sendAI()">
-    <button onclick="sendAI()" aria-label="إرسال">➤</button>
-  </div>
-  <div class="aiNote">تنبيه: في المسائل الشرعية المتخصصة أو الفتاوى، يُرجع إلى أهل العلم الموثوقين.</div>
+  <div id="chat" class="chat"><div class="msg bot">السلام عليكم ورحمة الله وبركاته 🌿<br>أنا <b>الوهباني AI</b>. اكتب سؤالك وسأجيبك.</div></div>
+  <div class="composer"><input id="aiInput" placeholder="اكتب سؤالك هنا..." onkeydown="if(event.key==='Enter')sendAI()"><button onclick="sendAI()">➤</button></div>
+  <div class="aiNote">مفتاح الذكاء الاصطناعي لا يظهر في التطبيق؛ الاتصال يتم عبر خادم آمن.</div>
 </section><footer>تم التطوير بواسطة الوهباني<br>الإصدار 1.0</footer>
 </main>
 <script>
-const data={
-"أذكار الصباح":[["آية الكرسي","اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ...","1"],["سبحان الله وبحمده","سُبْحَانَ اللَّهِ وَبِحَمْدِهِ","100"],["لا إله إلا الله","لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ","10"]],
-"أذكار المساء":[["آية الكرسي","اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ","1"],["الإخلاص والمعوذتان","قُلْ هُوَ اللَّهُ أَحَدٌ • قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ • قُلْ أَعُوذُ بِرَبِّ النَّاسِ","3"]],
-"بعد الصلاة":[["الاستغفار","أَسْتَغْفِرُ اللَّهَ","3"],["اللهم أنت السلام","اللَّهُمَّ أَنْتَ السَّلَامُ، وَمِنْكَ السَّلَامُ","1"]],
-"أذكار النوم":[["آية الكرسي","اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ","1"],["التسبيح والتحميد والتكبير","سُبْحَانَ اللَّهِ 33، وَالْحَمْدُ لِلَّهِ 33، وَاللَّهُ أَكْبَرُ 34","1"]]
-};
-let current=Object.keys(data)[0],counts=JSON.parse(localStorage.getItem("counts")||"{}"),favs=JSON.parse(localStorage.getItem("favs")||"[]");
-const icons={"أذكار الصباح":"🌅","أذكار المساء":"🌙","بعد الصلاة":"🕌","أذكار النوم":"😴"};
-function save(){localStorage.setItem("counts",JSON.stringify(counts));localStorage.setItem("favs",JSON.stringify(favs));update()}
-function update(){document.getElementById("total").textContent=Object.values(counts).reduce((a,b)=>a+b,0);document.getElementById("fav").textContent=favs.length}
-function renderCats(){cats.innerHTML=Object.keys(data).map(k=>'<button onclick="setCat(\''+k+'\')">'+icons[k]+'<br>'+k+'</button>').join('')}
-function setCat(k){current=k;render()}
-function render(){list.innerHTML=data[current].map((x,i)=>{let key=current+i,c=counts[key]||0;return '<article class="card"><h3>'+x[0]+'</h3><div class="dhikr">'+x[1]+'</div><div>العدد المطلوب: '+x[2]+'</div><div class="count">'+c+' / '+x[2]+'</div><button class="read" onclick="add(\''+key+'\')">📿 تسبيح</button><button class="reset" onclick="resetOne(\''+key+'\')">إعادة العداد</button></article>'}).join('')}
-function add(k){counts[k]=(counts[k]||0)+1;if(navigator.vibrate)navigator.vibrate(18);save();render()}
-function resetOne(k){counts[k]=0;save();render()}
-renderCats();render();update();
+let aiPreviousResponseId=null;
+function addMsg(text,type){const c=document.getElementById('chat'),d=document.createElement('div');d.className='msg '+type;d.textContent=text;c.appendChild(d);c.scrollTop=c.scrollHeight;return d}
+function askAI(q){document.getElementById('aiInput').value=q;sendAI()}
+async function sendAI(){
+ const input=document.getElementById('aiInput'),q=input.value.trim();if(!q)return;
+ addMsg(q,'user');input.value='';
+ const loading=addMsg('جاري التفكير…','bot');
+ try{
+  const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:q,previous_response_id:aiPreviousResponseId})});
+  const data=await r.json();loading.remove();
+  if(!r.ok) throw new Error(data.error||'تعذر الاتصال');
+  aiPreviousResponseId=data.response_id||null;addMsg(data.text||'لم يصل رد.','bot');
+ }catch(e){loading.remove();addMsg('لم يتم تشغيل خادم الذكاء الاصطناعي بعد. يجب نشر مجلد /api على خادم يدعم Node/Vercel وربطه بمفتاح OPENAI_API_KEY بشكل سري.','bot')}
+}
 </script>
 </body>
 </html>
