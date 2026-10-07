@@ -8,6 +8,10 @@
 <style>
 body{margin:0;font-family:Arial,Tahoma,sans-serif;background:linear-gradient(135deg,#eef9f5,#fff8e8);color:#17352d}header{background:linear-gradient(135deg,#0b5e4d,#159071);color:white;padding:28px 18px;border-radius:0 0 28px 28px}main{max-width:760px;margin:auto;padding:18px}.brand{font-size:24px;font-weight:bold}.sub{opacity:.85;margin-top:6px}.stats,.cats{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:16px 0}.box,.card,button{background:white;border:0;border-radius:18px;box-shadow:0 8px 25px #0b51351a}.box{text-align:center;padding:15px}.box b{display:block;color:#0d6b57;font-size:22px}button{padding:16px;cursor:pointer;color:#17352d;font-weight:bold}.cats button{font-size:15px}.card{padding:20px;margin-top:14px}.dhikr{font-size:21px;line-height:2;margin:16px 0}.count{color:#0d6b57;font-weight:bold;text-align:center;margin:10px}.read{width:100%;background:#0d6b57;color:white}.reset{margin-top:8px;width:100%;background:#fff2d6}footer{text-align:center;color:#668078;padding:30px 0}
 </style>
+<style>
+.ai{margin-top:20px;background:linear-gradient(145deg,#0d6b57,#12866d);border-radius:26px;padding:16px;color:#fff;box-shadow:0 12px 35px #0b513533}
+.aiHead{display:flex;align-items:center;justify-content:space-between}.aiTitle{font-size:21px;font-weight:800}.aiSub{font-size:12px;opacity:.82;margin-top:4px}.online{font-size:11px;background:#ffffff22;padding:7px 10px;border-radius:99px}.suggestions{display:flex;gap:7px;overflow:auto;padding:14px 0 7px}.suggestions button{white-space:nowrap;padding:9px 12px;border-radius:99px;color:#0d6b57;box-shadow:none;font-size:12px}.chat{background:#f5fbf8;border-radius:18px;padding:12px;min-height:150px;max-height:310px;overflow:auto}.msg{padding:10px 12px;border-radius:15px;margin:7px 0;line-height:1.8;font-size:14px}.bot{background:#e4f3ed;color:#17352d;border-top-right-radius:5px}.user{background:#fff0ce;color:#4c3920;border-top-left-radius:5px}.composer{display:flex;gap:7px;margin-top:10px}.composer input{flex:1;border:0;border-radius:15px;padding:14px;font:inherit;outline:none}.composer button{width:52px;padding:0;background:#fff;color:#0d6b57;font-size:23px}.aiNote{font-size:10px;opacity:.75;line-height:1.6;margin-top:9px}
+</style>
 </head>
 <body>
 <header><div class="brand">📿 الوهباني | أذكاري</div><div class="sub">رفيقك اليومي للذكر والطمأنينة ✨</div></header>
@@ -16,7 +20,27 @@ body{margin:0;font-family:Arial,Tahoma,sans-serif;background:linear-gradient(135
 <h3>أقسام الأذكار</h3>
 <div class="cats" id="cats"></div>
 <div id="list"></div>
-<footer>تم التطوير بواسطة الوهباني<br>الإصدار 1.0</footer>
+
+<section class="ai" id="ai">
+  <div class="aiHead">
+    <div><div class="aiTitle">🤖 اسأل الوهباني AI</div><div class="aiSub">مساعدك للذكر والطمأنينة</div></div>
+    <span class="online">● جاهز</span>
+  </div>
+  <div class="suggestions">
+    <button onclick="askAI('السلام عليكم')">السلام عليكم</button>
+    <button onclick="askAI('ما أذكار الصباح؟')">أذكار الصباح</button>
+    <button onclick="askAI('أعطني ذكرًا قصيرًا الآن')">ذكر قصير</button>
+    <button onclick="askAI('ما الذكر المناسب عند الخوف؟')">عند الخوف</button>
+  </div>
+  <div id="chat" class="chat">
+    <div class="msg bot">السلام عليكم ورحمة الله وبركاته 🌿<br>أنا <b>الوهباني AI</b>. اسألني عن الأذكار والذكر، وسأساعدك بما أستطيع.</div>
+  </div>
+  <div class="composer">
+    <input id="aiInput" placeholder="اكتب سؤالك هنا..." onkeydown="if(event.key==='Enter')sendAI()">
+    <button onclick="sendAI()" aria-label="إرسال">➤</button>
+  </div>
+  <div class="aiNote">تنبيه: في المسائل الشرعية المتخصصة أو الفتاوى، يُرجع إلى أهل العلم الموثوقين.</div>
+</section><footer>تم التطوير بواسطة الوهباني<br>الإصدار 1.0</footer>
 </main>
 <script>
 const data={
