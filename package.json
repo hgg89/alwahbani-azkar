@@ -1,6 +1,12 @@
 {
-  "name":"alwahbani-azkar-ai",
-  "private":true,
-  "type":"module",
-  "dependencies":{"openai":"latest"}
+  "name": "alwahbani-azkar-ai",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "latest",
+    "openai": "latest"
+  }
 }
