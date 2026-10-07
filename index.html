@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0d6b57">
+<title>الوهباني | أذكاري</title>
+<style>
+body{margin:0;font-family:Arial,Tahoma,sans-serif;background:linear-gradient(135deg,#eef9f5,#fff8e8);color:#17352d}header{background:linear-gradient(135deg,#0b5e4d,#159071);color:white;padding:28px 18px;border-radius:0 0 28px 28px}main{max-width:760px;margin:auto;padding:18px}.brand{font-size:24px;font-weight:bold}.sub{opacity:.85;margin-top:6px}.stats,.cats{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:16px 0}.box,.card,button{background:white;border:0;border-radius:18px;box-shadow:0 8px 25px #0b51351a}.box{text-align:center;padding:15px}.box b{display:block;color:#0d6b57;font-size:22px}button{padding:16px;cursor:pointer;color:#17352d;font-weight:bold}.cats button{font-size:15px}.card{padding:20px;margin-top:14px}.dhikr{font-size:21px;line-height:2;margin:16px 0}.count{color:#0d6b57;font-weight:bold;text-align:center;margin:10px}.read{width:100%;background:#0d6b57;color:white}.reset{margin-top:8px;width:100%;background:#fff2d6}footer{text-align:center;color:#668078;padding:30px 0}
+</style>
+</head>
+<body>
+<header><div class="brand">📿 الوهباني | أذكاري</div><div class="sub">رفيقك اليومي للذكر والطمأنينة ✨</div></header>
+<main>
+<div class="stats"><div class="box"><b id="total">0</b>إجمالي التسبيح</div><div class="box"><b id="fav">0</b>المفضلة</div></div>
+<h3>أقسام الأذكار</h3>
+<div class="cats" id="cats"></div>
+<div id="list"></div>
+<footer>تم التطوير بواسطة الوهباني<br>الإصدار 1.0</footer>
+</main>
+<script>
+const data={
+"أذكار الصباح":[["آية الكرسي","اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ...","1"],["سبحان الله وبحمده","سُبْحَانَ اللَّهِ وَبِحَمْدِهِ","100"],["لا إله إلا الله","لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ","10"]],
+"أذكار المساء":[["آية الكرسي","اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ","1"],["الإخلاص والمعوذتان","قُلْ هُوَ اللَّهُ أَحَدٌ • قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ • قُلْ أَعُوذُ بِرَبِّ النَّاسِ","3"]],
+"بعد الصلاة":[["الاستغفار","أَسْتَغْفِرُ اللَّهَ","3"],["اللهم أنت السلام","اللَّهُمَّ أَنْتَ السَّلَامُ، وَمِنْكَ السَّلَامُ","1"]],
+"أذكار النوم":[["آية الكرسي","اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ","1"],["التسبيح والتحميد والتكبير","سُبْحَانَ اللَّهِ 33، وَالْحَمْدُ لِلَّهِ 33، وَاللَّهُ أَكْبَرُ 34","1"]]
+};
+let current=Object.keys(data)[0],counts=JSON.parse(localStorage.getItem("counts")||"{}"),favs=JSON.parse(localStorage.getItem("favs")||"[]");
+const icons={"أذكار الصباح":"🌅","أذكار المساء":"🌙","بعد الصلاة":"🕌","أذكار النوم":"😴"};
+function save(){localStorage.setItem("counts",JSON.stringify(counts));localStorage.setItem("favs",JSON.stringify(favs));update()}
+function update(){document.getElementById("total").textContent=Object.values(counts).reduce((a,b)=>a+b,0);document.getElementById("fav").textContent=favs.length}
+function renderCats(){cats.innerHTML=Object.keys(data).map(k=>'<button onclick="setCat(\''+k+'\')">'+icons[k]+'<br>'+k+'</button>').join('')}
+function setCat(k){current=k;render()}
+function render(){list.innerHTML=data[current].map((x,i)=>{let key=current+i,c=counts[key]||0;return '<article class="card"><h3>'+x[0]+'</h3><div class="dhikr">'+x[1]+'</div><div>العدد المطلوب: '+x[2]+'</div><div class="count">'+c+' / '+x[2]+'</div><button class="read" onclick="add(\''+key+'\')">📿 تسبيح</button><button class="reset" onclick="resetOne(\''+key+'\')">إعادة العداد</button></article>'}).join('')}
+function add(k){counts[k]=(counts[k]||0)+1;if(navigator.vibrate)navigator.vibrate(18);save();render()}
+function resetOne(k){counts[k]=0;save();render()}
+renderCats();render();update();
+</script>
+</body>
+</html>
