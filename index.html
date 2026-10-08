@@ -18,7 +18,7 @@
 <div class="sectionTitle"><h2>✨ اختر ما تحتاجه</h2><span class="pill">وصول سريع</span></div><div class="grid" id="cats"></div>
 <div id="list"></div>
 <div id="utility" class="utility"><button onclick="showFavorites()">❤️ المفضلة</button><button onclick="daily()">🌿 ذكر عشوائي</button><button onclick="shareApp()">📤 مشاركة</button><button id="reminderBtn" onclick="reminder()">🔔 تذكير</button></div>
-<section class="ai" id="ai"><div class="aiTop"><div><div class="aiTitle">🤖 اسأل الوهباني AI</div><div class="pill">ذكاء محلي مجاني بلا مفتاح API</div></div><span class="online">● متصل</span></div>
+<section class="ai" id="ai"><div class="aiTop"><div><div class="aiTitle">🤖 اسأل الوهباني AI</div><div class="pill">ذكاء محلي مجاني</div></div><span class="online">● متصل</span></div>
 <div class="suggestions"><button onclick="askAI('السلام عليكم')">السلام عليكم</button><button onclick="askAI('صباح الخير')">صباح الخير</button><button onclick="askAI('ما أذكار الصباح؟')">أذكار الصباح</button><button onclick="askAI('أعطني ذكرًا قصيرًا الآن')">ذكر قصير</button><button onclick="askAI('ما الذكر المناسب عند الخوف؟')">عند الخوف</button></div>
 <div id="chat" class="chat"><div class="msg bot">السلام عليكم ورحمة الله وبركاته 🌿
 أنا <b>الوهباني AI</b>. اسألني عن الأذكار أو أي سؤال عام.</div></div>
@@ -26,9 +26,9 @@
 <footer>تم التطوير بواسطة الوهباني<br>نسخة Premium • الوهباني | أذكاري</footer></div><div id="toast" class="toast"></div>
 
 <script type="module">
-import { pipeline, TextStreamer } from "https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1";
+import { pipeline } from "https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1";
 
-const LOCAL_MODEL = "onnx-community/Qwen3-0.6B-ONNX";
+const LOCAL_MODEL = "onnx-community/Qwen2.5-0.5B-Instruct-ONNX";
 let localGenerator = null;
 let localLoading = null;
 
@@ -64,11 +64,10 @@ window.localAIChat = async function(message, onProgress){
     {role:"user",content:message}
   ];
   const output = await generator(messages,{
-    max_new_tokens:220,
+    max_new_tokens:160,
     do_sample:true,
     temperature:0.7,
-    top_p:0.9,
-    streamer: new TextStreamer(generator.tokenizer,{skip_prompt:true,skip_special_tokens:true})
+    top_p:0.9
   });
   const last = output?.[0]?.generated_text;
   if(Array.isArray(last)){
@@ -78,7 +77,7 @@ window.localAIChat = async function(message, onProgress){
   return String(last || "").trim();
 };
 
-window.localAIReady = ()=>!!localGenerator;
+window.localAIReady = ()=>!!localGenerator;\nfunction localAnswer(q){const s=q.toLowerCase();if(s.includes("السلام"))return "وعليكم السلام ورحمة الله وبركاته 🌿 أهلاً بك في الوهباني | أذكاري.";if(s.includes("صباح"))return "صباح الخير والبركة 🌅 يمكنك البدء بأذكار الصباح من التطبيق.";if(s.includes("مساء"))return "مساء الخير 🌙 يمكنك الآن قراءة أذكار المساء من التطبيق.";if(s.includes("كيف حالك"))return "بخير والحمد لله 😊 كيف يمكنني مساعدتك؟";if(s.includes("تاريخ اليوم"))return "يمكنني مساعدتك في معرفة التاريخ، لكن تحقق من تاريخ جهازك للحصول على التاريخ المحلي الدقيق.";if(s.includes("ذكر")||s.includes("أذكار"))return "يمكنك اختيار أذكار الصباح أو المساء أو بعد الصلاة أو النوم من أقسام التطبيق. وإذا أردت، اكتب اسم القسم أو سؤالك.";return "أنا الوهباني AI. أستطيع مساعدتك في الأذكار والأسئلة العامة. جرّب: ما أذكار الصباح؟ أو أعطني ذكرًا قصيرًا الآن.";}\n
 </script>
 
 <script>
@@ -102,7 +101,7 @@ function toggleFont(){const big=document.body.classList.toggle("fontLarge");docu
 async function loadSettings(){try{const r=await fetch("/api/settings");if(r.ok)settings=await r.json();$("subtitle").textContent=settings.subtitle||$("subtitle").textContent;if(settings.ai===false)$("ai").classList.add("hidden");if(settings.search===false)$("searchArea").classList.add("hidden");if(settings.reminders===false)$("reminderBtn").classList.add("hidden");if(settings.nightMode===false)$("themeBtn").classList.add("hidden");if(settings.fontControls===false)$("fontBtn").classList.add("hidden");renderCats();showSection(current)}catch{}}
 function addMsg(text,type){const c=$("chat"),d=document.createElement("div");d.className="msg "+type;d.textContent=text;c.appendChild(d);c.scrollTop=c.scrollHeight;return d}
 function askAI(q){$("aiInput").value=q;sendAI()}
-async function sendAI(){const input=$("aiInput"),q=input.value.trim();if(!q)return;addMsg(q,"user");input.value="";const loading=addMsg("جاري تجهيز الوهباني AI…","bot");try{const text=await window.localAIChat(q,msg=>{loading.textContent=msg});loading.remove();addMsg(text||"لم يصل رد.","bot")}catch(e){loading.remove();addMsg("تعذر تشغيل الذكاء المحلي على هذا المتصفح. جرّب Chrome وتأكد من وجود اتصال بالإنترنت لأول تحميل للنموذج.","bot");console.error(e)}}
+async function sendAI(){const input=$("aiInput"),q=input.value.trim();if(!q)return;addMsg(q,"user");input.value="";const loading=addMsg("جاري تشغيل الوهباني AI… أول مرة قد تستغرق قليلًا لتحميل النموذج.","bot");try{const text=await window.localAIChat(q,msg=>{loading.textContent=msg});loading.remove();addMsg(text||"لم يصل رد.","bot")}catch(e){loading.remove();const fallback=localAnswer(q);addMsg(fallback,"bot");console.error("Local AI error:",e)}}
 $("themeBtn").onclick=toggleTheme;$("fontBtn").onclick=toggleFont;
 if(localStorage.getItem("wa_theme")==="light")document.body.classList.add("light");if(localStorage.getItem("wa_font")==="large")document.body.classList.add("fontLarge");
 renderCats();showSection("الصباح");loadSettings();
