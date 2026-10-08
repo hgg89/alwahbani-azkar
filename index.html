@@ -26,7 +26,8 @@
 <footer>تم التطوير بواسطة الوهباني<br>نسخة Premium • الوهباني | أذكاري</footer></div><div id="toast" class="toast"></div>
 
 <script type="module">
-const API_BASE = location.hostname.endsWith("github.io") ? "https://alwahbani-azkar.onrender.com" : "";
+window.WAHBANI_API = "https://alwahbani-azkar.onrender.com";
+const API_BASE = window.WAHBANI_API;
 // الوهباني AI — يعمل عبر خادم التطبيق، لذلك لا يحتاج المستخدم لتحميل نموذج كبير على الهاتف.
 window.localAIChat = async function(message, onProgress){
   onProgress?.("جاري الاتصال بالوهباني AI ⚡");
@@ -72,10 +73,10 @@ function shareApp(){navigator.share?.({title:"الوهباني | أذكاري",t
 function reminder(){if(!settings.reminders)return;try{localStorage.setItem("wa_reminder","1");toast("🔔 تم تفعيل التذكير داخل التطبيق")}catch{toast("تعذر حفظ التذكير")}}
 function toggleTheme(){document.body.classList.toggle("light");localStorage.setItem("wa_theme",document.body.classList.contains("light")?"light":"dark")}
 function toggleFont(){const big=document.body.classList.toggle("fontLarge");document.body.classList.toggle("fontSmall",!big);localStorage.setItem("wa_font",big?"large":"small")}
-async function loadSettings(){try{const r=await fetch(API_BASE + "/api/settings");if(r.ok)settings=await r.json();$("subtitle").textContent=settings.subtitle||$("subtitle").textContent;if(settings.ai===false)$("ai").classList.add("hidden");if(settings.search===false)$("searchArea").classList.add("hidden");if(settings.reminders===false)$("reminderBtn").classList.add("hidden");if(settings.nightMode===false)$("themeBtn").classList.add("hidden");if(settings.fontControls===false)$("fontBtn").classList.add("hidden");renderCats();showSection(current)}catch{}}
+async function loadSettings(){try{const r=await fetch(window.WAHBANI_API + "/api/settings",{cache:"no-store"});if(r.ok)settings=await r.json();$("subtitle").textContent=settings.subtitle||$("subtitle").textContent;if(settings.ai===false)$("ai").classList.add("hidden");if(settings.search===false)$("searchArea").classList.add("hidden");if(settings.reminders===false)$("reminderBtn").classList.add("hidden");if(settings.nightMode===false)$("themeBtn").classList.add("hidden");if(settings.fontControls===false)$("fontBtn").classList.add("hidden");renderCats();showSection(current)}catch{}}
 function addMsg(text,type){const c=$("chat"),d=document.createElement("div");d.className="msg "+type;d.textContent=text;c.appendChild(d);c.scrollTop=c.scrollHeight;return d}
 function askAI(q){$("aiInput").value=q;sendAI()}
-async function sendAI(){const input=$("aiInput"),q=input.value.trim();if(!q)return;addMsg(q,"user");input.value="";const loading=addMsg("جاري تشغيل الوهباني AI… أول مرة قد تستغرق قليلًا لتحميل النموذج.","bot");try{const text=await window.localAIChat(q,msg=>{loading.textContent=msg});loading.remove();addMsg(text||"لم يصل رد.","bot")}catch(e){loading.remove();const fallback=localAnswer(q);addMsg(fallback,"bot");console.error("Local AI error:",e)}}
+async function sendAI(){const input=$("aiInput"),q=input.value.trim();if(!q)return;addMsg(q,"user");input.value="";const loading=addMsg("جاري الاتصال بالوهباني AI ⚡","bot");try{const text=await window.localAIChat(q,msg=>{loading.textContent=msg});loading.remove();addMsg(text||"لم يصل رد.","bot")}catch(e){loading.remove();const fallback="تعذر الاتصال بالذكاء الاصطناعي حاليًا. تأكد من اتصال الإنترنت ثم حاول مرة أخرى.";addMsg(fallback,"bot");console.error("Wahbani AI error:",e)}}
 $("themeBtn").onclick=toggleTheme;$("fontBtn").onclick=toggleFont;
 if(localStorage.getItem("wa_theme")==="light")document.body.classList.add("light");if(localStorage.getItem("wa_font")==="large")document.body.classList.add("fontLarge");
 renderCats();showSection("الصباح");loadSettings();
