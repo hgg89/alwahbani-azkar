@@ -6,7 +6,6 @@
     "start": "node server.js"
   },
   "dependencies": {
-    "express": "latest",
-    "openai": "latest"
+    "express": "latest"
   }
 }
